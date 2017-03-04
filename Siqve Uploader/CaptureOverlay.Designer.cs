@@ -1,6 +1,6 @@
 ﻿namespace Siqve_Uploader
 {
-    partial class CaptureArea
+    partial class CaptureOverlay
     {
         /// <summary>
         /// Required designer variable.

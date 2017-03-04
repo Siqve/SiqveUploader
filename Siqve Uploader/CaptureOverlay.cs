@@ -14,46 +14,52 @@ using System.IO.Compression;
 
 
 namespace Siqve_Uploader {
-	public partial class CaptureArea : Form {
-
-		Label sizeLabel = new DoubleBufferedLabel();
-		private bool drawing = false;
-		private Point currentPos;
-		private Point startPos;
-		GlobalKeyboardHook gHook;
+	public partial class CaptureOverlay : Form {
 
 
 		[DllImport("User32.dll", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
 		private static extern bool MoveWindow(IntPtr hWnd, int x, int y, int w, int h, bool Repaint);
 
-		private void resize(System.Object sender, System.EventArgs e) {
-			Size size = ScreenUtils.getTotalScreenSize();
-			this.MaximumSize = size;
-			Point point = ScreenUtils.getLeftTopMostPoint();
-			bool Result = MoveWindow(this.Handle, point.X, point.Y, size.Width, size.Height, true);
-		}
+		private static readonly Color transparencyColor = Color.Lime;
+		private static readonly Brush transparencyBrush = Brushes.Lime;
 
+		private Label sizeLabel = new DoubleBufferedLabel();
+		private bool drawing = false;
+		private Point currentPos;
+		private Point startPos;
+		private GlobalKeyboardHook gHook;
 
-		public CaptureArea() {
+		public CaptureOverlay() {
 			Load += resize;
 			InitializeComponent();
 			this.Cursor = Cursors.Cross;
-			this.Size = ScreenUtils.getTotalScreenSize();
 			this.FormBorderStyle = FormBorderStyle.None;
 			this.TopMost = true;
 			this.BackColor = Color.White;
-			this.TransparencyKey = Color.Lime;
+			this.TransparencyKey = transparencyColor;
 			this.Opacity = 0.1;
 			this.DoubleBuffered = true;
-			if (Screen.AllScreens.Length == 1) {
+
+			//If only one screen then Maximized state is sufficient
+			if (Screen.AllScreens.Length == 1)
 				this.WindowState = FormWindowState.Maximized;
-			}
+
+			hookKeys();
+			sizeLabel.Text = "(0,0)";
+			this.Controls.Add(sizeLabel);
+		}
+		private void resize(System.Object sender, System.EventArgs e) {
+			Size size = ScreenUtils.getTotalScreenSize();
+			Point point = ScreenUtils.getLeftTopMostPoint();
+			this.MaximumSize = size;
+			bool Result = MoveWindow(this.Handle, point.X, point.Y, size.Width, size.Height, true);
+		}
+
+		private void hookKeys() {
 			gHook = new GlobalKeyboardHook();
 			gHook.KeyDown += new KeyEventHandler(gHook_KeyDown);
 			gHook.HookedKeys.Add(Keys.Escape);
 			gHook.HookedKeys.Add(Keys.Enter);
-			sizeLabel.Text = "(0,0)";
-			this.Controls.Add(sizeLabel);
 		}
 
 		public void gHook_KeyDown(object sender, KeyEventArgs e) {
@@ -69,10 +75,10 @@ namespace Siqve_Uploader {
 		}
 
 		private void save() {
-			drawing = false;
-			updateSizeLabel();
+			this.drawing = false;
 			this.Invalidate();
 			this.Close();
+
 			Rectangle rect = getRectangle();
 			if (rect == null || rect.Size == new Size(0, 0)) {
 				return;
@@ -115,7 +121,7 @@ namespace Siqve_Uploader {
 		private void formPaint(object sender, PaintEventArgs e) {
 			if (drawing) {
 				Rectangle rect = getRectangle();
-				e.Graphics.FillRectangle(Brushes.Lime, rect);
+				e.Graphics.FillRectangle(transparencyBrush, rect);
 				e.Graphics.DrawRectangle(Pens.Black, rect);
 			}
 		}

@@ -150,7 +150,7 @@ namespace Siqve_Uploader {
 		}
 
 		void captureArea(object sender, EventArgs e) {
-			CaptureArea area = new CaptureArea();
+			CaptureOverlay area = new CaptureOverlay();
 			area.Show();
 		}
 

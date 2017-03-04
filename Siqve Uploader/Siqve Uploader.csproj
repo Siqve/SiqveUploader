@@ -70,11 +70,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CaptureArea.cs">
+    <Compile Include="CaptureOverlay.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CaptureArea.Designer.cs">
-      <DependentUpon>CaptureArea.cs</DependentUpon>
+    <Compile Include="CaptureOverlay.Designer.cs">
+      <DependentUpon>CaptureOverlay.cs</DependentUpon>
     </Compile>
     <Compile Include="DoubleBufferedLabel.cs">
       <SubType>Component</SubType>
@@ -96,8 +96,8 @@
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\NameUtils.cs" />
     <Compile Include="Utils\UploadUtils.cs" />
-    <EmbeddedResource Include="CaptureArea.resx">
-      <DependentUpon>CaptureArea.cs</DependentUpon>
+    <EmbeddedResource Include="CaptureOverlay.resx">
+      <DependentUpon>CaptureOverlay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
